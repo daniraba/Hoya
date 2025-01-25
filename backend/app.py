@@ -14,7 +14,7 @@ CORS(app)  # Allow Cross-Origin Requests for frontend integration
 pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'  # Update path as needed
 
 # Load the trained model
-model = joblib.load('diabetes_model.pkl')  # Replace with your model path
+model = joblib.load('scaler.pkl')  # Replace with your model path
 
 # API Route: Handle Image Upload and Prediction
 @app.route('/predict', methods=['POST'])
