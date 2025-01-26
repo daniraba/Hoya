@@ -57,7 +57,7 @@ function Navbar(){
             className="black_btn"
             onClick={() => router.push('/trial')}
             >
-                App
+                Diagnostic Tool
             </button>    
         </nav>
         </>

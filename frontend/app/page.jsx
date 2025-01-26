@@ -30,7 +30,7 @@ export default function Home() {
     </p>
     <div className="flex-center gap-4 mt-8">
       <button className="black_btn" onClick={() => router.push('/trial')}>
-        Jump to App
+        Jump to Diagnostic Tool
       </button>
       <button className="outline_btn" onClick={scrollToStory}>
         Learn More

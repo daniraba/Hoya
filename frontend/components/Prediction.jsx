@@ -43,7 +43,7 @@ function Prediction({
             <div
             className="mt-12 mx-12 pb-12 font-bold flex-center gap-12 text-4xl border-b border-zinc-400 "
             >
-                <span>{type === 0 ? ('You do not have diabetes') : (`You have Type ${type} Diabetes`)}</span>
+                <span>{type === '0' ? ('You do not have diabetes') : (`You have Type ${type} Diabetes`)}</span>
                 <div
                     className="text-base font-bold mx-12 mt-8 text-gray-600"
                     >
