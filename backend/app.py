@@ -79,6 +79,7 @@ scaler = joblib.load('scaler.pkl')
 # Ensure correct feature order by using the feature names from training
 expected_features = scaler.feature_names_in_
 
+
 # Regular expressions to extract feature values from OCR text
 regex_patterns = {
     'Glucose': r'Glucose\s*[:=]?\s*(\d+)',
@@ -109,7 +110,6 @@ def process_image_and_extract_features(image):
 
     # Extract text using OCR
     extracted_text = pytesseract.image_to_string(processed_img)
-    print("Extracted OCR Text:\n", extracted_text)
 
     # Extract features using regex
     parameters = {key: None for key in regex_patterns.keys()}
@@ -121,7 +121,6 @@ def process_image_and_extract_features(image):
 
     # Filter only extracted parameters
     important_text = {key: value for key, value in parameters.items() if value is not None}
-    print("Extracted Important Text:", important_text)
 
     return parameters, extracted_text
 
@@ -150,6 +149,8 @@ def predict_diabetes():
             }), 400
 
         # Step 2: Prepare data for model prediction
+        print("This is the extracted shit")
+        print({key: extracted_features[key] for key in expected_features})
         new_input = pd.DataFrame([{key: extracted_features[key] for key in expected_features}])
 
         # Scale input data
@@ -172,7 +173,7 @@ def predict_diabetes():
         return jsonify({
             ## "diabetes_status": diabetes_status,
             "diabetes_type": diabetes_type,
-            ## "extracted_features": extracted_features
+            "extracted_features": extracted_features
         })
         
 
@@ -184,29 +185,34 @@ def predict_from_data():
     try:
         body = json.loads(request.data)
         # Extract data from the body
-        age = body.get('age')
-        blood_pressure = body.get('bloodPressure')
-        insulin_level = body.get('insulinLevel')
-        BMI = body.get('BMI')
-        diabetes_pedigree_function = body.get('diabetesPedigreeFunction')
-        blood_glucose = body.get('bloodGlucose')
-        pregnancies = body.get('pregnancies')
+        Age = body.get('age')
+        BloodPressure = body.get('bloodPressure')
+        Insulin = body.get('insulinLevel')
+        bmi = body.get('BMI')
+        DiabetesPedigreeFunction = body.get('diabetesPedigreeFunction')
+        Glucose = body.get('bloodGlucose')
+        Pregnancies = body.get('pregnancies')
+        SkinThickness = body.get('skinThickness')
 
         # Ensure correct feature order by using the feature names from training
-        expected_features = scaler.feature_names_in_
     
         # Perform prediction logic here
         new_input = {
-            'age': age,
-            'blood_pressure': blood_pressure,
-            'insulin_level': insulin_level,
-            'BMI': BMI,
-            'diabetes_pedigree_function': diabetes_pedigree_function,
-            'blood_glucose': blood_glucose,
-            'pregnancies': pregnancies
+            'Glucose': float(Glucose),
+            'BloodPressure': float(BloodPressure),
+            'SkinThickness': float(SkinThickness),
+            'Insulin': float(Insulin),
+            'BMI': float(bmi),
+            'DiabetesPedigreeFunction': float(DiabetesPedigreeFunction),
+            'Age': float(Age),
+            'Pregnancies': float(Pregnancies),
+            
         }
+        print(expected_features)
+        print({key: new_input[key] for key in expected_features})
 
-        new_input_scaled = scaler.transform([new_input])
+        new_input = pd.DataFrame([{key: new_input[key] for key in expected_features}])
+        new_input_scaled = scaler.transform(new_input)
 
         # Step 3: Predict if the person has diabetes
         diabetes_prediction = diabetes_model.predict(new_input_scaled)

@@ -7,12 +7,12 @@ export const POST = async (req) => {
         age, 
         bloodPressure, 
         insulinLevel, 
-        familyHistory, 
         bloodGlucose, 
         pregnancy, 
         BMI, 
         diabetesPedigreeFunction,
-        diabetesVersion } = await req.json()
+        diabetesVersion,
+        skinThickness } = await req.json()
 
     try{
         
@@ -22,14 +22,14 @@ export const POST = async (req) => {
             age: age,
             bloodPressure: bloodPressure,
             insulinLevel: insulinLevel,
-            familyHistory: familyHistory,
             bloodGlucose: bloodGlucose,
             pregnancy: pregnancy,
             BMI: BMI,
             diabetesPedigreeFunction: diabetesPedigreeFunction,
-            diabetesVersion: diabetesVersion
+            diabetesVersion: diabetesVersion,
+            skinThickness: skinThickness
         })
-        await User.save()
+        await user.save()
         return new Response("Successfully added the user's data", {status: 200})
     }
     catch(err){

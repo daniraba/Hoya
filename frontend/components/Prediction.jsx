@@ -13,15 +13,23 @@ import {
     PopoverTrigger,
   } from "@/components/ui/popover"
 
+import { useRouter } from "@node_modules/next/navigation"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 function Prediction({
     type,
     isReportCorrect,
     setReportCorect,
+    newType,
     setNewType,
-    handleSubmit
+    handleSubmit,
+    post,
+    isSubmitting,
+    submittedData
 }){
+
+    const router = useRouter()
+
     return (
         <>
         <div
@@ -57,9 +65,8 @@ function Prediction({
                 />
             </div>
 
-            <form
+            <div
             className="w-full"
-            onSubmit={handleSubmit}
             >
             {isReportCorrect ? (
                 <div
@@ -68,7 +75,10 @@ function Prediction({
                 <p className="font-inter text-sm mb-4">
                     Please specify what was the actual type
                 </p>
-                <RadioGroup defaultValue={type.toString()} onValueChange={(value) => setNewType(value)}>
+                <RadioGroup defaultValue={type.toString()} onValueChange={(value) => {
+                    setNewType(value.toString())
+                    console.log(post, newType)
+                    }}>
                     <div className="flex items-center gap-2">
                     <RadioGroupItem value='0'/>
                     <h1 className="text-sm font-semibold ">
@@ -96,18 +106,20 @@ function Prediction({
             <div className="flex-between mx-12 my-8">
                 <button
                 className="outline_btn"
+                onClick={() => router.push()}
                 >
                     Ignore
                 </button>
                 <button
                 className="black_btn"
                 type='submit'
+                disabled={isSubmitting || submittedData}
                 onClick={() => handleSubmit()}
                 >
-                    Submit
+                   {isSubmitting ? 'Submitting' : (submittedData ? 'Submitted' : 'Submit')}
                 </button>
             </div>
-            </form>
+            </div>
 
         </div>
         </>

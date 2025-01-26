@@ -44,7 +44,7 @@ function Navbar(){
 
             <Link href={'/'} className="flex gap-2 flex-center mr-10">
             <Image 
-            src='/icons/king-card2.svg'
+            src='/icons/logo.svg'
             width='40'
             height='40'
             alt=''

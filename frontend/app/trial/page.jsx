@@ -10,6 +10,8 @@ function CreateSession(){
 
     // const {data: session} = useSession()
     const {toast} = useToast()
+    const [fileName, setFileName] = useState(null)
+    const [image, setImage] = useState(null);
     const [isReportCorrect, setReportCorrect] = useState(false)
     const [hasSubmittedReport, setSubmittedReport] = useState(false)
     const [submittedData, setSubmittedData] = useState(false)
@@ -24,51 +26,30 @@ function CreateSession(){
         BMI: '',
         diabetesPedigreeFunction: '',
         bloodGlucose: '',
-        familyHistory: false,
-        pregnancies: '',       
+        pregnancies: '',
+        skinThickness: ''       
     })
     const [isSubmitting, setSubmitting] = useState(false)
     const [newType, setNewType] = useState(0)
 
-    const handleFormSubmitting = async(e) => {
-        e.preventDefault();
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
 
-        setSubmitting(true)
-        try{
-            const response = await fetch('https://localhost:5000/predict', {
-                method: 'GET',
-                body: JSON.stringify({
-                    age: post.age,
-                    bloodPressure: post.bloodPressure,
-                    insulinLevel: post.insulinLevel,
-                    BMI: post.BMI,
-                    diabetesPedigreeFunction: post.diabetesPedigreeFunction,
-                    bloodGlucose: post.bloodGlucose,
-                    familyHistory: post.familyHistory,
-                    pregnancies: post.pregnancies
-                })
-                
-            })
-            if(response.ok){
-                const data = await response.json()
-                setAnalysedType(data)
-                setSubmittedReport(true)
-            }
-        }
-        catch(err){
-            console.log(err)
+        setFileName(file ? file.name : null);
 
-        }
-        finally{
-            setSubmitting(false)
-        }
-    }
+        if(!file) return;
 
-    const handleDataSubmission = () => {
-        const submitData = async () => {
+        setImage(file)
+      };
+
+    const handleFormSubmitting = (e) => {
+
+        const submitInput = async() => {
+
+
             setSubmitting(true)
             try{
-                const response = await fetch('/api/uploadData', {
+                const response = await fetch('http://127.0.0.1:5000/predict_from_data', {
                     method: 'POST',
                     body: JSON.stringify({
                         age: post.age,
@@ -77,10 +58,97 @@ function CreateSession(){
                         BMI: post.BMI,
                         diabetesPedigreeFunction: post.diabetesPedigreeFunction,
                         bloodGlucose: post.bloodGlucose,
-                        familyHistory: post.familyHistory,
-                        pregnancies: post.pregnancies,
-                        diabetesVersion: newType
+                        pregnancies: post.pregnancies
                     })
+                    
+                })
+                if(response.ok){
+                    const data = await response.json()
+                    setAnalysedType(data)
+                    setSubmittedReport(true)
+                }
+            }
+            catch(err){
+                console.log(err)
+
+            }
+            finally{
+                setSubmitting(false)
+            }
+        }
+
+        const submitImage = async () => {
+            setSubmitting(true);
+            try{
+
+                const formData = new FormData();
+                formData.append('file', image)
+
+                const response = await fetch('http://127.0.0.1:5000/predict', {
+                    method: 'POST',
+                    body: formData
+                    
+                })
+                if(response.ok){
+                    const data = await response.json()
+                    console.log(data)
+                    const item = {
+                        age: String(data.extracted_features.Age),
+                        BMI: data.extracted_features.BMI.toString(),
+                        bloodPressure: data.extracted_features.BloodPressure.toString(),
+                        diabetesPedigreeFunction: data.extracted_features.DiabetesPedigreeFunction.toString(),
+                        bloodGlucose: data.extracted_features.Glucose.toString(),
+                        insulinLevel: data.extracted_features.Insulin.toString(),
+                        pregnancies: data.extracted_features.Pregnancies.toString(),
+                        skinThickness: data.extracted_features.SkinThickness.toString()
+                    }
+                    console.log(item)
+                    setPost(item)
+                    setAnalysedType(data.diabetes_type)
+                    setSubmittedReport(true)
+                }
+            }
+            catch(err){
+                console.log(err)
+
+            }
+            finally{
+                setSubmitting(false)
+            }
+        }
+
+        if(image){
+            submitImage()
+        }
+        else{
+            submitInput()
+        }
+    }
+
+    const handleDataSubmission = () => {
+
+        const item = {
+            age: post.age,
+            bloodPressure: post.bloodPressure,
+            insulinLevel: post.insulinLevel,
+            BMI: post.BMI,
+            diabetesPedigreeFunction: post.diabetesPedigreeFunction,
+            bloodGlucose: post.bloodGlucose,
+            diabetesVersion: newType,
+            skinThickness: post.skinThickness
+        }
+
+        const submitData = async () => {
+            setSubmitting(true)
+
+            try{
+
+                const response = await fetch('http://localhost:3000/api/uploadData', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(item)
                    
                 })
                 if(response.ok){
@@ -97,7 +165,9 @@ function CreateSession(){
                     variant: 'destructive',
                     title: 'Oops, something went wrong',
                     description: "We could not post your data to our database..."
+                    
                 })
+                console.log(err)
             }
             finally{
                 setSubmitting(false)
@@ -106,69 +176,6 @@ function CreateSession(){
         submitData()
     }
     
-
-    /*
-    const handleSubmitting = async(e) =>{
-        e.preventDefault();
-
-        const zoomLinkRegex = /^https:\/\/(zoom\.us|us05web\.zoom\.us)\/(j|wc)\/\d{9,11}(?:\?pwd=[a-zA-Z0-9]+)?\.\d$/
-        if((!post.location && !post.zoomLink) || !post.date || !post.time || !post.description || post.tags.length === 0 ){
-            toast({
-                variant: 'destructive',
-                title: "Incomplete Form!",
-                description: "Please fill up all the options."
-            })
-        }
-        else if(!post.location && !zoomLinkRegex.test(post.zoomLink)){
-            toast({
-                variant: 'destructive',
-                title: "Invalid Zoom Link!",
-                description: "Please enter a valid Zoom Link."
-            })
-        }
-        else if(post.time && (Number(post.time.slice(0, 2)) < 10 || Number(post.time.slice(0, 2)) > 20)){
-            toast({
-                variant: 'destructive',
-                title: "Invalid Time!",
-                description: "Please enter a valid time between 10:00 to 20:00."
-            })
-        }
-        else if(post.time && (Number(post.time.slice(3, 5)) % 15 !== 0)){
-            toast({
-                variant: 'destructive',
-                title: "Invalid Time!",
-                description: "Please enter a time with 15 minutes interval."
-            })
-        }
-        else{
-            setSubmitting(true);
-            
-            try{
-                const response = await fetch('/api/session/new', {
-                    method: "POST",
-                    body: JSON.stringify({
-                        userId: session.user.id,
-                        location: (isChecked ? null: post.location),
-                        zoomLink: (isChecked ? post.zoomLink : null),
-                        date: post.date,
-                        time: post.time,
-                        description: post.description,
-                        tags: post.tags
-                    })
-                })
-
-                if(response.ok){
-                    router.push('/')
-                }
-            }
-            catch(error){
-                console.log(error)
-            } finally {
-                setSubmitting(false)
-            }
-        }
-    }
-    */
 
     return(
         <>
@@ -179,8 +186,8 @@ function CreateSession(){
         setPost={setPost}
         submitting = {isSubmitting}
         handleSubmitting={handleFormSubmitting}
-        isChecked={isChecked}
-        setChecked={setChecked}
+        fileName={fileName}
+        handleFileChange={handleFileChange}
         />
         
         ) : (
@@ -189,8 +196,12 @@ function CreateSession(){
         type={analysedType}
         isReportCorrect={isReportCorrect}
         setReportCorect={setReportCorrect}
+        newType={newType}
         setNewType={setNewType}
         handleSubmit={handleDataSubmission}
+        submittedData={submittedData}
+        isSubmitting={isSubmitting}
+        post={post}
         />
         )
         
