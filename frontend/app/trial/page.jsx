@@ -42,12 +42,12 @@ function CreateSession(){
         setImage(file)
       };
 
-    const handleFormSubmitting = (e) => {
+    const handleFormSubmitting = () => {
 
         const submitInput = async() => {
 
-
             setSubmitting(true)
+            console.log(post)
             try{
                 const response = await fetch('http://127.0.0.1:5000/predict_from_data', {
                     method: 'POST',
@@ -58,13 +58,15 @@ function CreateSession(){
                         BMI: post.BMI,
                         diabetesPedigreeFunction: post.diabetesPedigreeFunction,
                         bloodGlucose: post.bloodGlucose,
-                        pregnancies: post.pregnancies
+                        pregnancies: post.pregnancies,
+                        skinThickness: post.skinThickness
                     })
                     
                 })
                 if(response.ok){
                     const data = await response.json()
-                    setAnalysedType(data)
+                    setAnalysedType(data.diabetes_type)
+                    setNewType(data.diabetes_type.toString())
                     setSubmittedReport(true)
                 }
             }
@@ -104,6 +106,7 @@ function CreateSession(){
                     }
                     console.log(item)
                     setPost(item)
+                    setNewType(data.diabetes_type.toString())
                     setAnalysedType(data.diabetes_type)
                     setSubmittedReport(true)
                 }

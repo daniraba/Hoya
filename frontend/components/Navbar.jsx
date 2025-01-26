@@ -50,14 +50,14 @@ function Navbar(){
             alt=''
             className="rounded-full"
             />
-            <p className=" font-inter font-semibold text-2xl text-black tracking-wide">Medicare</p>
+            <p className=" font-inter font-semibold text-2xl text-black tracking-wide">BetterSteps</p>
             </Link>
             </div>
             <button
             className="black_btn"
             onClick={() => router.push('/trial')}
             >
-                Trial
+                App
             </button>    
         </nav>
         </>

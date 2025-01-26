@@ -26,9 +26,8 @@ function Create(
 
     return(
         <>
-        <form 
+        <div
         className="flex w-full border border-gray-300 rounded-xl bg-white/[0.6] py-12"
-        onSubmit={handleSubmitting}
         >
     
             <div className="border-r-2 text-left px-8 w-1/2 max-lg:w-full">
@@ -42,6 +41,31 @@ function Create(
                 </div>
                 <div className="mt-5 mr-8">
 
+                <div
+                    className="mt-4"
+                    >
+                        <p className="font-satoshi font-bold text-sm text-black tracking-wide mt-1 pr-8">
+                            Doctor's Report
+                        </p>
+                        <input
+                        type='file'
+                        ref={fileInputRef}
+                        className="hidden"
+                        onChange={handleFileChange}
+                        />
+                        <div className="gap-2 border border-zinc-400 mt-2 rounded-xl px-4 py-2 flex items-center">
+                            <button
+                            onClick={() => handleBrowseClick()}
+                            className="px-4 py-1 black_btn_borderless rounded-xl border-[2px] border-black"
+                            type="button"
+                            >
+                                Browse
+                            </button>
+                            <h1 className="font-inter font-semibold text-sm text-gray-400">
+                                {fileName ? `You have selected ${fileName}` : 'No file selected...'}
+                            </h1>
+                        </div>
+                    </div>
                     
                     <div
                     className="mt-4"
@@ -59,22 +83,7 @@ function Create(
                         }}
                         />
                     </div>
-                    <div
-                    className="mt-4"
-                    >
-                        <p
-                        className="font-satoshi font-bold text-sm text-black tracking-wide mt-1 pr-8"
-                        >
-                           BMI
-                        </p>
-                        <input
-                        placeholder="Please provide your BMI"
-                        onChange={(e) => {
-                            setPost({...post, BMI: e.target.value})
-                        }}
-                        className="mt-2 text-sm font-medium font-inter border border-gray-300 px-2 rounded py-2 w-full outline-none focus:border-gray-900"
-                        />
-                    </div>
+                
                     <div
                     className="mt-4"
                     >
@@ -183,27 +192,18 @@ function Create(
                     <div
                     className="mt-4"
                     >
-                        <p className="font-satoshi font-bold text-sm text-black tracking-wide mt-1 pr-8">
-                            Doctor's Report's Image
+                        <p
+                        className="font-satoshi font-bold text-sm text-black tracking-wide mt-1 pr-8"
+                        >
+                           BMI
                         </p>
                         <input
-                        type='file'
-                        ref={fileInputRef}
-                        className="hidden"
-                        onChange={handleFileChange}
+                        placeholder="Please provide your BMI"
+                        onChange={(e) => {
+                            setPost({...post, BMI: e.target.value})
+                        }}
+                        className="mt-2 text-sm font-medium font-inter border border-gray-300 px-2 rounded py-2 w-full outline-none focus:border-gray-900"
                         />
-                        <div className="gap-2 border border-zinc-400 mt-2 rounded-xl px-4 py-2 flex items-center">
-                            <button
-                            onClick={() => handleBrowseClick()}
-                            className="px-4 py-1 black_btn_borderless rounded-xl border-[2px] border-black"
-                            type="button"
-                            >
-                                Browse
-                            </button>
-                            <h1 className="font-inter font-semibold text-sm text-gray-400">
-                                {fileName ? `You have selected ${fileName}` : 'No file selected...'}
-                            </h1>
-                        </div>
                     </div>
 
 
@@ -226,7 +226,7 @@ function Create(
                     </div>
 
                 </div>         
-        </form>
+        </div>
         </>
     )
 }

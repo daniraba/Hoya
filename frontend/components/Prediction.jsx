@@ -41,10 +41,19 @@ function Prediction({
                 </h1>
             </div>
             <div
-            className="mt-12 mx-12 pb-12 font-bold text-4xl flex-center border-b border-zinc-400"
+            className="mt-12 mx-12 pb-12 font-bold flex-center gap-12 text-4xl border-b border-zinc-400 "
             >
-                {type === 0 ? ('You do not have diabetes') : (`You have Type ${type} Diabetes`)}
+                <span>{type === 0 ? ('You do not have diabetes') : (`You have Type ${type} Diabetes`)}</span>
+                <div
+                    className="text-base font-bold mx-12 mt-8 text-gray-600"
+                    >
+                        If this report does not match with your doctor's diagnosis, we highly recommend that you take another
+                        report from a doctor
+                    </div>
             </div>
+
+
+
             <div
             className="text-xl font-bold mx-12 mt-8"
             >
@@ -55,7 +64,7 @@ function Prediction({
             className="flex-start mt-2 mx-12 gap-4"
             >
                 <p className="text-sm">
-                    Was the diagnosis from our website different from your doctor's?
+                    Was the diagnosis from our website different from your doctor's even after rediagnosing?
                 </p>
                 <Checkbox
                 checked = {isReportCorrect}
@@ -75,7 +84,7 @@ function Prediction({
                 <p className="font-inter text-sm mb-4">
                     Please specify what was the actual type
                 </p>
-                <RadioGroup defaultValue={type.toString()} onValueChange={(value) => {
+                <RadioGroup defaultValue={newType} onValueChange={(value) => {
                     setNewType(value.toString())
                     console.log(post, newType)
                     }}>

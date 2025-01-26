@@ -25,6 +25,9 @@ const profileSchema = new mongoose.Schema({
     },
     diabetesVersion: {
         type: Number
+    },
+    skinThickness : {
+        type: String
     }
 })
 
